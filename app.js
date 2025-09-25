@@ -1,78 +1,96 @@
-class books{
-constructor(title, author, bn){
+class Book {
+  constructor(title, author, isbn) {
     this.title = title;
     this.author = author;
-    this.bn = bn;
-    this.isavailable = true;
-}
+    this.isbn = isbn;
+    this.isAvailable = true;
+  }
 
-borrow(){
-    if(this.available){
-        this.available = false;
-        return `${this.title} has been borrowed.`;
-    }else{
-        return `${this.title} is not available.`;
+ borrow() {
+    if (this.isAvailable) {
+      this.isAvailable = false;
+      return `${this.title} has been borrowed.`;
+    } else {
+      return `${this.title} is not available.`;
     }
-}
-returnBook(){
-    this.isavailable = true
+  }
+
+  returnBook() {
+    this.isAvailable = true;
     return `${this.title} has been returned.`;
+  }
 }
+
+class Library {
+  constructor(name) {
+    this.name = name;
+    this.books = [];
+  }
+
+  addBook(book) {
+    this.books.push(book);
+    this.displayBooks();
+  }
+
+  removeBook(isbn) {
+    this.books = this.books.filter(book => book.isbn !== isbn);
+    this.displayBooks();
+  }
+
+  displayBooks() {
+    const bookList = document.getElementById("bookList");
+    bookList.innerHTML = "";
+
+    this.books.forEach(book => {
+      const bookDiv = document.createElement("div");
+      bookDiv.className = "book";
+      bookDiv.innerHTML = `
+        <strong>${book.title}</strong> by ${book.author} (ISBN: ${book.isbn}) 
+        <span class="${book.isAvailable ? "available" : "borrowed"}">
+          [${book.isAvailable ? "Available" : "Borrowed"}]
+        </span>
+        <button onclick="library.borrowBook('${book.isbn}')">Borrow</button>
+        <button onclick="library.returnBook('${book.isbn}')">Return</button>
+        <button onclick="library.removeBook('${book.isbn}')">Remove</button>
+      `;
+      bookList.appendChild(bookDiv);
+    });
+  }
+
+    borrowBook(isbn) {
+    const book = this.books.find(b => b.isbn === isbn);
+    if (book) alert(book.borrow());
+    this.displayBooks();
+  }
+
+
+   returnBook(isbn) {
+    const book = this.books.find(b => b.isbn === isbn);
+    if (book) alert(book.returnBook());
+    this.displayBooks();
+  }
 }
 
-class Library{
-    constructor(name){
-        this.name = name;
-        this.books =[];
-    }
-
-    addBook(book){
-        this.books.push(book);
-        displayBooks();
-    }
-
-    removeBook(bn){
-        this.books = this.books.filter(book => book.bn !==book);
-        displayBooks();
-    }
-
-    displayBooks(){
-        const bookList = document.getElementById("bookList").innerHTML = "";
-        this.books.forEach(book => {
-            const bookItem = document.createElement("Div");
-            bookItem.className = "book";
-            bookItem.innerHTML = `
-            ${book.title} by ${book.author} (bn: ${book.bn})
-            <span class = "${book.isavailable ? "available" : "borrowed"}">[${book.isavailable ? "available" : "borrowed"}]
-            </span>
-            <button onclick= "library.borrowBook('${book.bn}')">Borrow</button>
-            <button onclick= "library.returnBook('${book.bn}')">Return</button>
-            <button onclick= "library.removeBook('${book.bn}')">Remove</button>
-
-            `;
-            bookList.appendChild(bookItem);
-
-        });
-     
-    }
-
-     borrowBook(bn){
-                const book = this.books.find(b => b.bn === bn);
-                if(book){ alert(book.borrow())};
-                this.displayBooks();
-            }
-
-    removeBook(bn){ 
-        const book = this.books.find(b => b.bn === bn);
-        if (book){ alert(book.returnBook())};
-        this.displayBooks();
-    }
-}
 
 // ....... the Real App Logic.............
 
-const library = new library(" City Library");
-document.getElementById("addbtn").addEventListener("click", () => {
-    const title =  document.getElementById("title").value;
-    const author = document.getElementById("author").value;
-})
+const library = new Library("City Library");
+
+document.getElementById("addBookBtn").addEventListener("click", () => {
+  const title = document.getElementById("title").value;
+  const author = document.getElementById("author").value;
+  const isbn = document.getElementById("isbn").value;
+
+  if (title && author && isbn) {
+    const newBook = new Book(title, author, isbn);
+    library.addBook(newBook);
+
+    document.getElementById("title").value = "";
+    document.getElementById("author").value = "";
+    document.getElementById("isbn").value = "";
+  } else {
+    alert("Please fill in all fields.");
+  }
+});
+
+

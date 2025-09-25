@@ -1,14 +1,8 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
 
-}
 body{
     font-family: Arial, sans-serif;
     margin: 20px;
-    background-color: rgb(80, 10, 80)
-    ;
+   
 }
 .container{
     max-width: 600px;
@@ -17,4 +11,17 @@ body{
 input, button{
     padding: 8px;
     margin: 5px;
+}
+
+.book{
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin: 5px 0;
+}
+
+.available{
+    color: green;
+}
+.borrowed{
+    color: red;
 }
