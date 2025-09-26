@@ -1,10 +1,10 @@
 class Book {
-  constructor(title, author, isbn) {
+  constructor(title, author, isbn, isAvailable = true) {
     this.title = title;
     this.author = author;
     this.isbn = isbn;
-    this.isAvailable = true;
-  }
+    this.isAvailable = isAvailable;
+  } 
 
  borrow() {
     if (this.isAvailable) {
@@ -24,16 +24,28 @@ class Book {
 class Library {
   constructor(name) {
     this.name = name;
-    this.books = [];
+    this.books = this.loadFromStorage();
+    this.displayBooks();
+  }
+
+  saveToStorage(){
+    localStorage.setItem("librarybooks", JSON.stringify(this.books))
+  }
+
+  loadFromStorage(){
+  const data = JSON.parse(localStorage.getItem("librarybooks")) || [];
+  return(data.map(b =>new Book(b.title, b.author, b.isbn, b.isAvailable)))
   }
 
   addBook(book) {
     this.books.push(book);
+    this.saveToStorage();
     this.displayBooks();
   }
 
   removeBook(isbn) {
     this.books = this.books.filter(book => book.isbn !== isbn);
+    this.saveToStorage();
     this.displayBooks();
   }
 
@@ -60,6 +72,7 @@ class Library {
     borrowBook(isbn) {
     const book = this.books.find(b => b.isbn === isbn);
     if (book) alert(book.borrow());
+    this.saveToStorage();
     this.displayBooks();
   }
 
@@ -67,6 +80,7 @@ class Library {
    returnBook(isbn) {
     const book = this.books.find(b => b.isbn === isbn);
     if (book) alert(book.returnBook());
+    this.saveToStorage();
     this.displayBooks();
   }
 }
